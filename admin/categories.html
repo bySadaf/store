@@ -1,0 +1,154 @@
+<!DOCTYPE html>
+<html lang="en">
+<head>
+  <meta charset="UTF-8">
+  <meta name="viewport" content="width=device-width, initial-scale=1.0">
+  <meta name="robots" content="noindex, nofollow">
+  <title>Categories | Store Admin</title>
+  <link rel="icon" type="image/svg+xml" href="../assets/images/favicon.svg">
+
+  <link href="https://cdn.jsdelivr.net/npm/bootstrap@5.3.3/dist/css/bootstrap.min.css" rel="stylesheet">
+  <link href="https://cdn.jsdelivr.net/npm/bootstrap-icons@1.11.3/font/bootstrap-icons.min.css" rel="stylesheet">
+  <link href="https://fonts.googleapis.com/css2?family=Poppins:wght@600;700;800&family=Inter:wght@400;500;600&display=swap" rel="stylesheet">
+
+  <link href="../css/variables.css?v=6" rel="stylesheet">
+  <link href="css/admin.css?v=6" rel="stylesheet">
+</head>
+<body data-page="categories" data-page-title="Categories">
+
+  <div id="adminShell">
+    <div id="bootOverlay" class="admin-boot">
+      <div class="spinner-border" role="status"></div>
+      <p>Checking your login&hellip;</p>
+    </div>
+
+    <main class="admin-main d-none" id="adminContent">
+      <div class="page-head">
+        <div>
+          <h1>Categories</h1>
+          <p class="sub">Group your products so customers can browse them easily.</p>
+        </div>
+        <button type="button" class="btn btn-primary-app" id="addCategoryBtn">
+          <i class="bi bi-plus-lg me-2"></i>Add Category
+        </button>
+      </div>
+
+      <div class="note-block mb-3">
+        <i class="bi bi-lightbulb mt-1"></i>
+        <div>A category can only be deleted when it has no products left. Hide it with the Active switch if you want it off the website.</div>
+      </div>
+
+      <div class="panel">
+        <div class="table-responsive">
+          <table class="table align-middle">
+            <thead>
+              <tr>
+                <th scope="col">Image</th>
+                <th scope="col">Category</th>
+                <th scope="col">Description</th>
+                <th scope="col">Products</th>
+                <th scope="col">Active</th>
+                <th scope="col">Actions</th>
+              </tr>
+            </thead>
+            <tbody id="categoriesTableBody">
+              <tr><td colspan="6" class="table-loading"><div class="spinner-border text-primary" role="status"></div></td></tr>
+            </tbody>
+          </table>
+        </div>
+      </div>
+    </main>
+  </div>
+
+  <!-- ======================= Add / Edit category modal ====================== -->
+  <!-- NOTE: the <form> IS the .modal-content (keeps the Save button visible
+       on short screens — see products.html for the same pattern). -->
+  <div class="modal fade" id="categoryModal" tabindex="-1" aria-labelledby="categoryModalTitle">
+    <div class="modal-dialog modal-dialog-centered modal-dialog-scrollable">
+      <form class="modal-content" id="categoryForm" novalidate>
+        <div class="modal-header">
+          <h2 class="modal-title h5" id="categoryModalTitle">Add Category</h2>
+          <button type="button" class="btn-close" data-bs-dismiss="modal" aria-label="Close"></button>
+        </div>
+
+        <div class="modal-body">
+            <input type="hidden" id="cfId" value="">
+
+            <div class="mb-3">
+              <label class="form-label" for="cfName">Category Name <span class="text-danger">*</span></label>
+              <input type="text" class="form-control" id="cfName" maxlength="60"
+                     placeholder="e.g. Shoes, Watches, Bags&hellip;" autocomplete="off">
+              <div class="field-error" id="cfNameError">Please enter a category name.</div>
+              <div class="field-error" id="cfNameDuplicate" style="display:none">A category with this name already exists. Please choose a different name.</div>
+            </div>
+
+            <div class="mb-3">
+              <label class="form-label" for="cfDescription">Description</label>
+              <textarea class="form-control" id="cfDescription" rows="3" maxlength="300"
+                        placeholder="Shown under the category name on the website&hellip;"></textarea>
+            </div>
+
+            <div class="mb-3">
+              <label class="form-label" for="cfImage">Category Image (optional)</label>
+              <div class="current-image-label d-none" id="cfCurrentWrap">
+                Current image: <img id="cfCurrentImg" src="" alt="" class="thumb ms-1">
+              </div>
+              <div class="img-drop">
+                <img class="img-preview" id="cfImagePreview" src="../assets/images/placeholder.svg" alt="Image preview">
+                <div class="img-drop-text">
+                  <label class="btn btn-outline-app btn-sm mb-2" for="cfImage">
+                    <i class="bi bi-upload me-1"></i>Choose image
+                  </label>
+                  <div>JPG, PNG or WebP &middot; up to 5 MB</div>
+                  <input type="file" class="d-none" id="cfImage" accept=".jpg,.jpeg,.png,.webp,image/jpeg,image/png,image/webp">
+                </div>
+              </div>
+              <div class="field-error" id="cfImageError">That image cannot be used. Please choose a JPG, PNG or WebP file under 5 MB.</div>
+            </div>
+
+            <div class="form-check form-switch">
+              <input class="form-check-input" type="checkbox" role="switch" id="cfActive" checked>
+              <label class="form-check-label" for="cfActive">Show this category on the website</label>
+            </div>
+          </div>
+
+        <div class="modal-footer">
+          <button type="button" class="btn btn-outline-secondary" data-bs-dismiss="modal">Cancel</button>
+          <button type="submit" class="btn btn-primary-app" id="cfSaveBtn">
+            <i class="bi bi-check-lg me-1"></i>Save Category
+          </button>
+        </div>
+      </form>
+    </div>
+  </div>
+
+  <!-- ======================= Delete confirmation modal ====================== -->
+  <div class="modal fade" id="catDeleteModal" tabindex="-1" aria-labelledby="catDeleteTitle">
+    <div class="modal-dialog modal-dialog-centered">
+      <div class="modal-content">
+        <div class="modal-header">
+          <h2 class="modal-title h5" id="catDeleteTitle">Delete Category</h2>
+          <button type="button" class="btn-close" data-bs-dismiss="modal" aria-label="Close"></button>
+        </div>
+        <div class="modal-body">
+          <div id="catDeleteMessage"></div>
+        </div>
+        <div class="modal-footer">
+          <button type="button" class="btn btn-outline-secondary" data-bs-dismiss="modal">Keep Category</button>
+          <button type="button" class="btn btn-danger" id="confirmCatDeleteBtn">
+            <i class="bi bi-trash me-1"></i>Delete Category
+          </button>
+        </div>
+      </div>
+    </div>
+  </div>
+
+  <script src="https://cdn.jsdelivr.net/npm/@supabase/supabase-js@2"></script>
+  <script src="https://cdn.jsdelivr.net/npm/bootstrap@5.3.3/dist/js/bootstrap.bundle.min.js"></script>
+  <script src="../js/config.js?v=6"></script>
+  <script src="../js/supabase.js?v=6"></script>
+  <script src="../js/utils.js?v=6"></script>
+  <script src="js/auth.js?v=6"></script>
+  <script src="js/categories.js?v=6"></script>
+</body>
+</html>

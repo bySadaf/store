@@ -1,0 +1,37 @@
+/* ==========================================================================
+   BRAND VARIABLES
+   --------------------------------------------------------------------------
+   Change your brand colors HERE — one file controls the public website AND
+   the admin panel. Both style.css and admin.css import these variables.
+   ========================================================================== */
+
+:root {
+  /* Brand colors */
+  --primary-color: #0f766e;        /* Main brand color (teal) */
+  --primary-dark: #115e59;         /* Darker shade for gradients / hover */
+  --primary-soft: #ccfbf1;         /* Soft tint for badges / highlights */
+
+  --secondary-color: #f59e0b;      /* Accent color (amber) */
+  --background-color: #f8fafc;     /* Page background */
+  --surface-color: #ffffff;        /* Card / panel background */
+  --text-color: #1e293b;           /* Main text */
+  --muted-color: #64748b;          /* Secondary text */
+  --border-color: #e2e8f0;         /* Borders */
+
+  /* WhatsApp */
+  --whatsapp-color: #128c43;       /* Accessible WhatsApp green */
+  --whatsapp-dark: #0e7a38;        /* Hover state */
+
+  --danger-color: #dc2626;
+
+  /* Shapes & shadows */
+  --radius-lg: 16px;
+  --radius-md: 12px;
+  --radius-sm: 8px;
+  --shadow-sm: 0 1px 3px rgba(15, 23, 42, 0.08);
+  --shadow-md: 0 8px 24px rgba(15, 23, 42, 0.12);
+
+  /* Typography */
+  --font-heading: 'Poppins', system-ui, -apple-system, 'Segoe UI', sans-serif;
+  --font-body: 'Inter', system-ui, -apple-system, 'Segoe UI', sans-serif;
+}

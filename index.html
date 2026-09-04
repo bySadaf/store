@@ -1,0 +1,264 @@
+<!DOCTYPE html>
+<html lang="en">
+<head>
+  <meta charset="UTF-8">
+  <meta name="viewport" content="width=device-width, initial-scale=1.0">
+  <meta name="theme-color" content="#0f766e">
+
+  <!-- SEO (static fallbacks; the business name from Settings replaces these) -->
+  <title>My Store | Product Catalog</title>
+  <meta name="description" content="Browse our collection of quality products and order easily on WhatsApp.">
+  <meta property="og:type" content="website">
+  <meta property="og:title" content="My Store | Product Catalog">
+  <meta property="og:description" content="Browse our collection of quality products and order easily on WhatsApp.">
+  <meta property="og:image" content="assets/images/placeholder.svg">
+
+  <link rel="icon" type="image/svg+xml" href="assets/images/favicon.svg">
+
+  <!-- Bootstrap 5 + Icons + Fonts -->
+  <link rel="preconnect" href="https://fonts.googleapis.com">
+  <link rel="preconnect" href="https://fonts.gstatic.com" crossorigin>
+  <link href="https://fonts.googleapis.com/css2?family=Poppins:wght@500;600;700;800&family=Inter:wght@400;500;600&display=swap" rel="stylesheet">
+  <link href="https://cdn.jsdelivr.net/npm/bootstrap@5.3.3/dist/css/bootstrap.min.css" rel="stylesheet">
+  <link href="https://cdn.jsdelivr.net/npm/bootstrap-icons@1.11.3/font/bootstrap-icons.min.css" rel="stylesheet">
+
+  <!-- App styles (variables.css holds the brand colors) -->
+  <link href="css/variables.css?v=6" rel="stylesheet">
+  <link href="css/style.css?v=6" rel="stylesheet">
+</head>
+<body>
+
+  <!-- Setup warning shown until js/config.js contains real Supabase values -->
+  <div id="setupBanner" aria-live="polite"></div>
+
+  <!-- ============================ Header ============================ -->
+  <header class="site-header" id="siteHeader">
+    <nav class="navbar navbar-expand-lg py-2" aria-label="Main navigation">
+      <div class="container">
+        <a class="navbar-brand" href="#hero" aria-label="Go to top">
+          <img id="brandLogo" src="" alt="" class="brand-logo d-none">
+          <span id="brandName">My Store</span>
+        </a>
+
+        <button class="navbar-toggler" type="button" data-bs-toggle="collapse" data-bs-target="#navMenu"
+                aria-controls="navMenu" aria-expanded="false" aria-label="Toggle navigation">
+          <span class="navbar-toggler-icon"></span>
+        </button>
+
+        <div class="collapse navbar-collapse" id="navMenu">
+          <ul class="navbar-nav ms-auto align-items-lg-center gap-1 gap-lg-0 mt-3 mt-lg-0">
+            <li class="nav-item"><a class="nav-link" href="#hero">Home</a></li>
+            <li class="nav-item"><a class="nav-link" href="#categories">Categories</a></li>
+            <li class="nav-item"><a class="nav-link" href="#contact">Contact</a></li>
+            <li class="nav-item ms-lg-2">
+              <button id="navSearchBtn" class="btn-search" type="button" aria-label="Search products">
+                <i class="bi bi-search" aria-hidden="true"></i>
+              </button>
+            </li>
+          </ul>
+        </div>
+      </div>
+    </nav>
+  </header>
+
+  <main>
+    <!-- ============================ Hero ============================ -->
+    <section class="hero" id="hero">
+      <div class="container">
+        <div class="row justify-content-center">
+          <div class="col-lg-9">
+            <span class="hero-eyebrow">Order easily on WhatsApp</span>
+            <h1 id="heroTitle">Quality Products, Great Prices</h1>
+            <p class="hero-desc" id="heroDesc">
+              Browse our catalog and message us on WhatsApp to place your order. Fast replies, friendly service.
+            </p>
+            <div class="hero-actions">
+              <a href="#catalog" class="btn btn-cta btn-lg">Browse Products <i class="bi bi-arrow-right ms-1" aria-hidden="true"></i></a>
+              <a href="#contact" class="btn btn-ghost btn-lg">Contact Us</a>
+            </div>
+          </div>
+        </div>
+      </div>
+    </section>
+
+    <!-- ======================= Featured products ======================= -->
+    <section class="section d-none" id="featuredSection">
+      <div class="container">
+        <div class="section-head">
+          <h2>Featured Products</h2>
+          <p>Our current favourites, picked by the shop owner.</p>
+        </div>
+        <div class="row g-3 g-lg-4" id="featuredGrid"></div>
+      </div>
+    </section>
+
+    <!-- ========================= Categories ========================= -->
+    <section class="section pt-0" id="categories">
+      <div class="container">
+        <div class="section-head">
+          <h2>Shop by Category</h2>
+          <p>Pick a category to see matching products.</p>
+        </div>
+        <div class="row g-3" id="categoryGrid">
+          <div class="col-12"><div class="status-block"><i class="bi bi-hourglass-split"></i><p>Loading categories&hellip;</p></div></div>
+        </div>
+      </div>
+    </section>
+
+    <!-- ========================= Product catalog ========================= -->
+    <section class="section section-alt" id="catalog">
+      <div class="container">
+        <div class="section-head">
+          <h2>Our Products</h2>
+          <p id="catalogSubtitle">Browse everything we have in store</p>
+        </div>
+
+        <!-- Search + sort -->
+        <div class="catalog-toolbar" role="search">
+          <div class="search-wrap">
+            <i class="bi bi-search" aria-hidden="true"></i>
+            <input id="searchInput" class="form-control" type="search"
+                   placeholder="Search products, e.g. shoes, watch, bag&hellip;"
+                   aria-label="Search products by name, description or category" autocomplete="off">
+          </div>
+          <select id="sortSelect" class="form-select" aria-label="Sort products">
+            <option value="newest">Newest first</option>
+            <option value="price-asc">Price: low to high</option>
+            <option value="price-desc">Price: high to low</option>
+            <option value="name-asc">Name: A to Z</option>
+          </select>
+        </div>
+
+        <!-- Active filters -->
+        <div id="activeFilters" class="active-filters d-none" aria-label="Active filters"></div>
+
+        <!-- Loading / empty / error messages -->
+        <div id="productsStatus"></div>
+
+        <!-- Product grid -->
+        <div class="row g-3 g-lg-4" id="productsGrid" aria-live="polite"></div>
+
+        <small id="resultsCount" class="results-count"></small>
+
+        <div class="load-more-wrap">
+          <button id="loadMoreBtn" class="btn d-none" type="button">Load More</button>
+        </div>
+      </div>
+    </section>
+
+    <!-- ============================ Contact ============================ -->
+    <section class="section" id="contact">
+      <div class="container">
+        <div class="section-head">
+          <h2>Contact Us</h2>
+          <p>Questions about a product? We reply quickly on WhatsApp.</p>
+        </div>
+        <div class="row g-3 g-lg-4" id="contactCards"></div>
+      </div>
+    </section>
+  </main>
+
+  <!-- ============================ Footer ============================ -->
+  <footer class="site-footer">
+    <div class="container">
+      <div class="row g-4">
+        <div class="col-lg-5">
+          <span class="footer-brand"><i class="bi bi-shop" aria-hidden="true"></i> <span id="footerName">My Store</span></span>
+          <p class="footer-desc" id="footerDesc">Browse our catalog and message us on WhatsApp to place your order.</p>
+        </div>
+        <div class="col-6 col-lg-3">
+          <h4>Quick Links</h4>
+          <ul class="list-unstyled footer-links">
+            <li><i class="bi bi-chevron-right" aria-hidden="true"></i><a href="#hero">Home</a></li>
+            <li><i class="bi bi-chevron-right" aria-hidden="true"></i><a href="#categories">Categories</a></li>
+            <li><i class="bi bi-chevron-right" aria-hidden="true"></i><a href="#catalog">All Products</a></li>
+            <li><i class="bi bi-chevron-right" aria-hidden="true"></i><a href="#contact">Contact</a></li>
+          </ul>
+        </div>
+        <div class="col-6 col-lg-4">
+          <h4>Get in Touch</h4>
+          <p class="mb-0" id="footerContact"><span class="opacity-75">Contact details coming soon.</span></p>
+        </div>
+      </div>
+      <div class="footer-bottom">
+        <span>&copy; <span id="year">2025</span> <span id="footerNameCopy">My Store</span>. All rights reserved.</span>
+        <span class="admin-link"><a href="admin/login.html">Admin Login</a></span>
+      </div>
+    </div>
+  </footer>
+
+  <!-- Floating WhatsApp chat button (uses the number from Settings) -->
+  <a id="waFloat" class="wa-float d-none" href="#" target="_blank" rel="noopener noreferrer"
+     aria-label="Chat with us on WhatsApp">
+    <i class="bi bi-whatsapp" aria-hidden="true"></i>
+  </a>
+
+  <!-- ======================= Product details modal ======================= -->
+  <div class="modal fade" id="productModal" tabindex="-1" aria-labelledby="pmName" aria-hidden="true">
+    <div class="modal-dialog modal-dialog-centered modal-lg modal-dialog-scrollable">
+      <div class="modal-content">
+        <!-- Close (X): direct child of .modal-content so it stays pinned to the
+             popup's top-right corner while the product details scroll (see
+             .pm-close in css/style.css). Plain text x - renders without any
+             icon font, on every device. -->
+        <button type="button" class="pm-close" data-bs-dismiss="modal" aria-label="Close product details">
+          <span aria-hidden="true">&times;</span>
+        </button>
+        <div class="row g-0">
+          <div class="col-md-6">
+            <div class="pm-media">
+              <!-- Photo gallery: main image + prev/next arrows + thumbnails.
+                   The arrows / count / thumbnails only appear when the product
+                   has more than one photo (toggled from js/products.js). -->
+              <div class="pm-stage">
+                <img id="pmImage" src="" alt="">
+                <button type="button" class="pm-nav pm-nav-prev d-none" id="pmPrev"
+                        aria-label="Previous photo">
+                  <i class="bi bi-chevron-left" aria-hidden="true"></i>
+                </button>
+                <button type="button" class="pm-nav pm-nav-next d-none" id="pmNext"
+                        aria-label="Next photo">
+                  <i class="bi bi-chevron-right" aria-hidden="true"></i>
+                </button>
+                <span class="pm-count d-none" id="pmCount"></span>
+              </div>
+              <div class="pm-thumbs d-none" id="pmThumbs" aria-label="Product photos"></div>
+            </div>
+          </div>
+          <div class="col-md-6">
+            <div class="modal-info">
+              <span class="pm-cat-badge" id="pmCategory">Product</span>
+              <div class="pm-featured d-none" id="pmFeatured"><i class="bi bi-star-fill" aria-hidden="true"></i> Featured product</div>
+              <h2 id="pmName">Product name</h2>
+              <div class="pm-price" id="pmPrice">Rs. 0</div>
+              <p class="pm-description" id="pmDescription"></p>
+              <a id="pmWhatsApp" class="btn btn-whatsapp" href="#" target="_blank" rel="noopener noreferrer">
+                <i class="bi bi-whatsapp" aria-hidden="true"></i><span>Buy on WhatsApp</span>
+              </a>
+            </div>
+          </div>
+        </div>
+      </div>
+    </div>
+  </div>
+
+  <noscript>
+    <div class="alert alert-warning m-3">
+      This product catalog needs JavaScript to load products from the database. Please enable JavaScript in your browser.
+    </div>
+  </noscript>
+
+  <!-- Libraries -->
+  <script src="https://cdn.jsdelivr.net/npm/@supabase/supabase-js@2"></script>
+  <script src="https://cdn.jsdelivr.net/npm/bootstrap@5.3.3/dist/js/bootstrap.bundle.min.js"></script>
+
+  <!-- App scripts (order matters) -->
+  <script src="js/config.js?v=6"></script>
+  <script src="js/supabase.js?v=6"></script>
+  <script src="js/utils.js?v=6"></script>
+  <script src="js/whatsapp.js?v=6"></script>
+  <script src="js/categories.js?v=6"></script>
+  <script src="js/products.js?v=6"></script>
+  <script src="js/main.js?v=6"></script>
+</body>
+</html>
