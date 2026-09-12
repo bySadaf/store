@@ -928,3 +928,7 @@ select:focus-visible,
     transition-duration: 0.01ms !important;
   }
 }
+
+#brandName {
+   display: block !important;
+}
