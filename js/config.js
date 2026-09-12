@@ -14,9 +14,9 @@
    ========================================================================== */
 
 // const SUPABASE_URL = 'https://YOUR_PROJECT_REF.supabase.co';
-const SUPABASE_URL = 'https://bunjiffenobmzdgmflsb.supabase.co';
+const SUPABASE_URL = 'https://ogchobmsjbokanbyztdy.supabase.co';
 // const SUPABASE_ANON_KEY = 'PASTE_YOUR_ANON_PUBLIC_KEY_HERE';
-const SUPABASE_ANON_KEY = 'sb_publishable_PZMo-TjRO5IgILFU2jbkZw_ETKuAtUD';
+const SUPABASE_ANON_KEY = 'sb_publishable_q9rt2mP3U1LsH91yA3D_yg_3G61QJZ9';
 
 /* -------------------------------------------------------------------------
    Optional site behaviour (safe to leave as-is)
